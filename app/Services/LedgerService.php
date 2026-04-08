@@ -36,7 +36,7 @@ class LedgerService
             }
 
             if (!$entry->isBalanced()) {
-                throw new \Exception('Journal entry is not balanced. Total debit must equal total credit.');
+                throw new \Exception('Journal entry is not balanced per currency. Debit must equal credit for each currency.');
             }
 
             return $entry;
@@ -45,10 +45,17 @@ class LedgerService
 
     public function validateDoubleEntry(array $lines): bool
     {
-        $totalDebit = collect($lines)->sum('debit');
-        $totalCredit = collect($lines)->sum('credit');
-        
-        return bccomp($totalDebit, $totalCredit, 4) === 0;
+        $byCurrency = collect($lines)->groupBy('currency_id');
+
+        foreach ($byCurrency as $currencyId => $currencyLines) {
+            $debit  = $currencyLines->sum('debit');
+            $credit = $currencyLines->sum('credit');
+            if (bccomp((string)$debit, (string)$credit, 4) !== 0) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function postJournalEntry(JournalEntry $entry, ?int $approvedById = null): JournalEntry

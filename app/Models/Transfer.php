@@ -10,8 +10,8 @@ class Transfer extends Model
 {
     protected $fillable = [
         'code', 'sender_customer_id', 'receiver_name', 'receiver_phone',
-        'partner_id', 'amount', 'currency_id', 'fee', 'status', 
-        'otp_code', 'otp_expires_at', 'notes'
+        'partner_id', 'amount', 'currency_id', 'fee', 'status',
+        'otp_code', 'otp_expires_at', 'journal_entry_id', 'notes'
     ];
 
     protected $casts = [
@@ -34,6 +34,11 @@ class Transfer extends Model
     public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);
+    }
+
+    public function journalEntry(): BelongsTo
+    {
+        return $this->belongsTo(JournalEntry::class);
     }
 
     public function partners(): BelongsToMany

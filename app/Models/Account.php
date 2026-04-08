@@ -34,8 +34,11 @@ class Account extends Model
         return $query->where('is_active', true);
     }
 
-    public function scopeOfType($query, string $type)
+    public function scopeOfType($query, $type)
     {
+        if (is_array($type)) {
+            return $query->whereIn('type', $type);
+        }
         return $query->where('type', $type);
     }
 }

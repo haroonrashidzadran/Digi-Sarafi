@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Settlement extends Model
 {
-    protected $fillable = ['code', 'partner_id', 'amount', 'currency_id', 'type', 'status', 'description'];
+    protected $fillable = ['code', 'partner_id', 'amount', 'currency_id', 'type', 'status', 'description', 'journal_entry_id'];
 
     protected $casts = [
         'amount' => 'decimal:4',
@@ -22,6 +22,11 @@ class Settlement extends Model
     public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);
+    }
+
+    public function journalEntry(): BelongsTo
+    {
+        return $this->belongsTo(JournalEntry::class);
     }
 
     public function scopeCompleted($query)
